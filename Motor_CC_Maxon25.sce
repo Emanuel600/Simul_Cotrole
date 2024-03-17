@@ -20,8 +20,51 @@ B = Kt*Cor_Vaz/Vel_Vaz  // Inércia do Motor
 // Monta o Sistema (VEL_ANG/Vi)
 s = %s
 G1 = (1/La)/(s + Ra/La)
+G1 = syslin('c', G1)
 G2 = (Kv/J)/(s + B/J)
+G2 = syslin('c', G2)
 FTFW = G1*G2            // Função de Transferência "FeedForward"
-FTMA = FTFW*H           // Funcção de Transferência de Malha Aberta
-H = Kv
-FTMF = FTFW/(FTMA+1)    // Função de Transferência de Malha Fechada
+H = Kv                  // Malha de Realimentação
+H = syslin('c', H, 1)
+FTMA = FTFW*H           // Função de Transferência de Malha Aberta
+FTMF = FTFW/.H          // Função de Transferência de Malha Fechada
+disp("==========")
+disp("=== G1 ===")
+disp(G1)
+disp("=== G2 ===")
+disp(G2)
+disp("=== H  ===")
+disp(H)
+disp("=== MF ===")
+disp(FTMF)
+disp("==========")
+// Simula o Sistema
+tmax = 50e-3
+t = 0:tmax/1e3:tmax
+step = csim('step', t, FTMF)        // Simula resposta à degrau unitário
+plot2d(1e3*t, 12*step, leg="ideal") // Como é linear, 12*step é a resposta à 12 V
+xgrid(35)
+xtitle("Resposta ao degrau (12 V)", "tempo [ms]", "Velocidade [rad/s]")
+// Assumindo La -> 0
+G1 = 1/Ra
+G1 = syslin('c', G1, 1)
+G2 = (Kv/J)/(s + B/J)
+G2 = syslin('c', G2)
+FTFW = G1*G2            // Função de Transferência "FeedForward"
+H = Kv                  // Malha de Realimentação
+H = syslin('c', H, 1)
+FTMA = FTFW*H           // Função de Transferência de Malha Aberta
+FTMF = FTFW/.H          // Função de Transferência de Malha Fechada
+disp("==========")
+disp("=== G1 ===")
+disp(G1)
+disp("=== G2 ===")
+disp(G2)
+disp("=== H  ===")
+disp(H)
+disp("=== MF ===")
+disp(FTMF)
+disp("==========")
+// Simula o Sistema
+step = csim('step', t, FTMF)        // Simula resposta à degrau unitário
+plot2d(1e3*t, 12*step)
