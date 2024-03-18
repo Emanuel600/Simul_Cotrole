@@ -66,5 +66,5 @@ disp("=== MF ===")
 disp(FTMF)
 disp("==========")
 // Simula o Sistema
-step = csim('step', t, FTMF)        // Simula resposta à degrau unitário
+step = csim('step', t, FTMF)
 plot2d(1e3*t, 12*step)
