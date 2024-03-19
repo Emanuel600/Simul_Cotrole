@@ -28,6 +28,9 @@ H = Kv                  // Malha de Realimentação
 H = syslin('c', H, 1)
 FTMA = FTFW*H           // Função de Transferência de Malha Aberta
 FTMF = FTFW/.H          // Função de Transferência de Malha Fechada
+tmax = 30e-3
+t = [0:tmax/1e3:tmax]'
+step = 12*csim('step', t, FTMF)
 disp("==========")
 disp("=== G1 ===")
 disp(G1)
@@ -38,13 +41,6 @@ disp(H)
 disp("=== MF ===")
 disp(FTMF)
 disp("==========")
-// Simula o Sistema
-tmax = 50e-3
-t = 0:tmax/1e3:tmax
-step = csim('step', t, FTMF)        // Simula resposta à degrau unitário
-plot2d(1e3*t, 12*step, leg="ideal") // Como é linear, 12*step é a resposta à 12 V
-xgrid(35)
-xtitle("Resposta ao degrau (12 V)", "tempo [ms]", "Velocidade [rad/s]")
 // Assumindo La -> 0
 G1 = 1/Ra
 G1 = syslin('c', G1, 1)
@@ -66,5 +62,8 @@ disp("=== MF ===")
 disp(FTMF)
 disp("==========")
 // Simula o Sistema
-step = csim('step', t, FTMF)
-plot2d(1e3*t, 12*step)
+step_app = 12*csim('step', t, FTMF)         // Valor aproximado
+plot2d(1e3*t, [step' step_app'], [1, 2])    // Plota a função de transferência em t
+xgrid(35)
+xtitle("Resposta ao degrau (12 V)", "tempo [ms]", "Velocidade [rad/s]")
+legend("Aproximado", "Real", 2)
