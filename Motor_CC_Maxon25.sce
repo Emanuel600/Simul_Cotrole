@@ -63,7 +63,8 @@ disp(FTMF)
 disp("==========")
 // Simula o Sistema
 step_app = 12*csim('step', t, FTMF)         // Valor aproximado
-plot2d(1e3*t, [step' step_app'], [1, 2])    // Plota a função de transferência em t
+w_app = 507.48*(1 - exp(-236*t))
+plot2d(1e3*t, [step' step_app' w_app], [1, 2, 3])    // Plota a função de transferência em t
 xgrid(35)
 xtitle("Resposta ao degrau (12 V)", "tempo [ms]", "Velocidade [rad/s]")
-legend("Aproximado", "Real", 2)
+legend("Real", "Aproximado", "Aproximado Analíticamente", 2)
